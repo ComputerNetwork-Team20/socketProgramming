@@ -13,7 +13,6 @@ while(True):
     conn, addr = s.accept()
     print("3. {} has been connected".format(addr))
 
-
     data = conn.recv(1024)
     print("5. 받은 데이터 :", data.decode("utf-8"))
 
