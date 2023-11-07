@@ -9,29 +9,38 @@ import random
 # p______
 
 
-# 쓰레드에서 실행되는 코드입니다.
-# 접속한 클라이언트마다 새로운 쓰레드가 생성되어 통신을 하게 됩니다.
-def threaded(client_socket, addr, word):
+
+# 접속한 클라이언트마다 새로운 스레드가 생성되어 통신
+def threaded(client_socket, addr, answer, life):
     # addr = host + port
-    print('>> Connected by :', addr[0], ':', addr[1])
+    print('>>> 연결된 호스트: [', addr[0], ':', addr[1], "]")
 
     while True: # 클라이언트가 접속을 끊을 때 까지 반복합니다.
         try:
-            # 데이터가 수신되면 클라이언트에 다시 전송합니다.(에코)
+            # 유저가 입력한 문자 or 문자열
             data = client_socket.recv(1024)
 
-            if not data: #데이터가 없으면 disconnection
-                print('>> Disconnected by ' + addr[0], ':', addr[1])
-                break
+            # if not data: #데이터가 없으면 disconnection -> 데이터가 없을 일은 없을 것 같아서?
+            #     print('>>> 연결이 끊긴 호스트: [' + addr[0], ':', addr[1], "]")
+            #     break
 
-            result = func(word, data) #string, char
+            # answer와 유저가 입력한 데이터 비교 TODO 함수명, 변수명 수정하기
+            print('>>> 유저가 입력한 문자(열): [ ' + addr[0], ':', addr[1], data.decode(), "]")  # client로 부터 받은 데이터 보여주기
+            result = func(answer, data) #string, char
 
-            print('>> Received from ' + addr[0], ':', addr[1], data.decode()) #client로 부터 받은 데이터 보여주기
 
+            # 결과 보내기
             # 메세지를 보낸 본인을 제외한 서버에 접속한 클라이언트에게 메세지 보내기
+            # TODO 본인을 포함한 모든 클라이언트에 중간 결과 공유
             for client in client_sockets :
                 if client != client_socket :
                     client.send(data)
+
+
+
+
+
+
 
         except ConnectionResetError as e:
             print('>> Disconnected by ' + addr[0], ':', addr[1])
@@ -60,6 +69,8 @@ def randomWords():
     return words[random.randrange(0, 16)]
 
 
+
+
 if __name__ == '__main__':
     client_sockets = [] # 서버에 접속한 클라이언트 목록
 
@@ -69,7 +80,7 @@ if __name__ == '__main__':
     PORT = 9999
 
     # 서버 소켓 생성
-    print('>> Server Start')
+    print('>>> 서버 실행')
     server_socket = socket(AF_INET, SOCK_STREAM)
     server_socket.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
     server_socket.bind((HOST, PORT))
@@ -77,24 +88,30 @@ if __name__ == '__main__':
 
     try:
         while True:
-            print('>> Wait')
+            print('>>> 서버 대기 상태')
 
-            # connection 체크
+            # clinent connection 체크 & 몇번 유저인지 반환
             client_socket, addr = server_socket.accept()
             client_sockets.append(client_socket)
 
+            userTurnData = '>>> 순서 안내' + "\n" + \
+                       "user" + (client_sockets.index(client_socket)+1) + "입니다."
+            server_socket.send(userTurnData.encode("utf-8"))
 
 
             # 참가자 수 확인 2가 맞으면 게임 실행
             if(checkParticipant(len(client_socket))):
-                # 각 client의 thread 생성 # TODO 문구 확인하기
-                word = randomWords();
-                start_new_thread(threaded, (client_socket, addr, word))
+                #게임 메뉴 -> 예진
+
+                #단어, 목숨 설정 및 안내하기
+                answer = randomWords();
+                life = len(answer) - 1;
+                gameSettingData = ">>> 맞출 단어의 길이는 " + len(answer) + "이며, 목숨은 " + life + "개입니다.";
+                server_socket.send(gameSettingData.encode("utf-8"))
 
 
-                ###
-                # 게임 실행되는 중!!!!#
-                ###
+                # 각 client의 thread 생성
+                start_new_thread(threaded, (client_socket, addr, answer, life))
 
 
             else:
