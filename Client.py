@@ -14,28 +14,21 @@ def recv_data(client_socket) :
     while True :
         data = client_socket.recv(1024)
         print("MENTION:" + repr(data.decode()))
+        if(data=="GAME OVER"):  client_socket.close()
 
 
 if __name__ == '__main__':
+
     start_new_thread(recv_data, (client_socket,))
-    print ('>> Connect Server')
+    print('>> Connect Server')
 
     while True:
-        message = input('')
-        if message == 'quit':
-            close_data = message
-            break
+        message = input('>>알파벳 혹은 단어를 입력하세요')
         client_socket.send(message.encode())
 
-    client_socket.close()
 
 
 
-
-
-
-
-#
 # from socket import *
 #
 # HOST = "127.0.0.1"
