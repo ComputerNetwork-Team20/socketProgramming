@@ -1,5 +1,3 @@
-
-
 from socket import *
 from _thread import *
 import random
@@ -219,3 +217,4 @@ if __name__ == '__main__':
 # print("메시지를 보냈습니다.")
 #
 # serverSocket.close()
+
