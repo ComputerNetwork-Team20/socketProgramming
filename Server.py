@@ -2,27 +2,32 @@
 
 from socket import *
 from _thread import *
+import random
+
+# word = list(word) 0
+# correct = list(bool) 1
+# p______
 
 
 # 쓰레드에서 실행되는 코드입니다.
 # 접속한 클라이언트마다 새로운 쓰레드가 생성되어 통신을 하게 됩니다.
-def threaded(client_socket, addr):
+def threaded(client_socket, addr, word):
     # addr = host + port
     print('>> Connected by :', addr[0], ':', addr[1])
 
-    # 클라이언트가 접속을 끊을 때 까지 반복합니다.
-    while True:
+    while True: # 클라이언트가 접속을 끊을 때 까지 반복합니다.
         try:
             # 데이터가 수신되면 클라이언트에 다시 전송합니다.(에코)
             data = client_socket.recv(1024)
 
-            if not data:
+            if not data: #데이터가 없으면 disconnection
                 print('>> Disconnected by ' + addr[0], ':', addr[1])
                 break
 
-            print('>> Received from ' + addr[0], ':', addr[1], data.decode())
+            result = func(word, data) #string, char
 
-            # 서버에 접속한 클라이언트들에게 채팅 보내기
+            print('>> Received from ' + addr[0], ':', addr[1], data.decode()) #client로 부터 받은 데이터 보여주기
+
             # 메세지를 보낸 본인을 제외한 서버에 접속한 클라이언트에게 메세지 보내기
             for client in client_sockets :
                 if client != client_socket :
@@ -35,6 +40,8 @@ def threaded(client_socket, addr):
     if client_socket in client_sockets :
         client_sockets.remove(client_socket)
         print('remove client list : ',len(client_sockets))
+
+
 
     client_socket.close()
 
@@ -50,7 +57,7 @@ def randomWords():
     words = ['physical', 'datalink', 'network', 'transport', 'applicaion',
              'bit', 'frame', 'datagram', 'segment', 'message',
              'socket', 'thread', 'server', 'client', 'programming']
-    return random.randrange(0, 16)
+    return words[random.randrange(0, 16)]
 
 
 if __name__ == '__main__':
@@ -76,14 +83,14 @@ if __name__ == '__main__':
             client_socket, addr = server_socket.accept()
             client_sockets.append(client_socket)
 
-            # 각 client의 thread 생성 # TODO 문구 확인하기
-            start_new_thread(threaded, (client_socket, addr))
 
-            #print("참가자 수 : ", len(client_sockets))
 
             # 참가자 수 확인 2가 맞으면 게임 실행
             if(checkParticipant(len(client_socket))):
+                # 각 client의 thread 생성 # TODO 문구 확인하기
                 word = randomWords();
+                start_new_thread(threaded, (client_socket, addr, word))
+
 
                 ###
                 # 게임 실행되는 중!!!!#
