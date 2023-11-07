@@ -8,7 +8,33 @@ import random
 # correct = list(bool) 1
 # p______
 
+def checkChar(answer, data):
+    if data in answer:
+        return "correct"
+    else:
+        return "wrong"
 
+
+def checkWord(answer, data):
+    if answer == data:
+        return "userwin"
+    else:
+        return "userlose"
+
+
+def showBlank(answer, blankWord, data):
+    answerList = list(answer)
+    blankList = list(blankWord)
+
+    length = len(answer)
+
+    for i in range(0, length):
+        if answerList[i] == data:
+            blankList[i] = data;
+
+    blankWord = ''.join(blankList)
+
+    return blankWord
 
 # 접속한 클라이언트마다 새로운 스레드가 생성되어 통신
 def threaded(client_socket, addr, answer, life):
@@ -26,7 +52,30 @@ def threaded(client_socket, addr, answer, life):
 
             # answer와 유저가 입력한 데이터 비교 TODO 함수명, 변수명 수정하기
             print('>>> 유저가 입력한 문자(열): [ ' + addr[0], ':', addr[1], data.decode(), "]")  # client로 부터 받은 데이터 보여주기
-            result = func(answer, data) #string, char
+
+            blankWord= "_" * len(answer)
+
+            result = ""
+
+            #사용자가 입력한게 문자냐 단어냐 구분            
+            if len(data) == 1:
+                result = checkChar(answer, data)
+            else:
+                result = checkWord()
+
+
+            if result == "correct":
+                print("문자 하나 맞춤 빈칸공개한다")
+                showBlank = showBlank(answer, blankWord, data)
+                print("근데 단어 다맞췄으면 유저 승리")
+            elif result == "wrong":
+                print("목숨감소해야함")
+                print("목숨 다떨어지면 유저 패배")
+            elif result == "userwin":
+                print("단어맞춤 유저승리")
+            else:
+                print("단어틀림 유저패배")
+
 
 
             # 결과 보내기
@@ -35,11 +84,6 @@ def threaded(client_socket, addr, answer, life):
             for client in client_sockets :
                 if client != client_socket :
                     client.send(data)
-
-
-
-
-
 
 
         except ConnectionResetError as e:
