@@ -2,9 +2,18 @@ from socket import *
 from _thread import *
 import random
 
-# word = list(word) 0
-# correct = list(bool) 1
-# p______
+def checkParticipant(len):
+    if(len == 2):
+        print("참가자 수: ", 2)
+        return True
+    else:
+        return False
+
+def randomWords():
+    words = ['physical', 'datalink', 'network', 'transport', 'applicaion',
+             'bit', 'frame', 'datagram', 'segment', 'message',
+             'socket', 'thread', 'server', 'client', 'programming']
+    return words[random.randrange(0, 16)]
 
 def checkChar(answer, data):
     if data in answer:
@@ -97,18 +106,6 @@ def threaded(client_socket, addr, answer, life):
     client_socket.close()
 
 
-def checkParticipant(len):
-    if(len == 2):
-        print("참가자 수: ", 2)
-        return True
-    else:
-        return False
-
-def randomWords():
-    words = ['physical', 'datalink', 'network', 'transport', 'applicaion',
-             'bit', 'frame', 'datagram', 'segment', 'message',
-             'socket', 'thread', 'server', 'client', 'programming']
-    return words[random.randrange(0, 16)]
 
 
 
@@ -137,7 +134,7 @@ if __name__ == '__main__':
             client_sockets.append(client_socket)
 
             userTurnData = '>>> 순서 안내' + "\n" + \
-                       "user" + (client_sockets.index(client_socket)+1) + "입니다."
+                       "user" + str(client_sockets.index(client_socket)+1) + "입니다."
             server_socket.send(userTurnData.encode("utf-8"))
 
 
