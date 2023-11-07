@@ -1,12 +1,13 @@
 
 
-import socket
+from socket import *
 from _thread import *
 
 
 # 쓰레드에서 실행되는 코드입니다.
 # 접속한 클라이언트마다 새로운 쓰레드가 생성되어 통신을 하게 됩니다.
 def threaded(client_socket, addr):
+    # addr = host + port
     print('>> Connected by :', addr[0], ':', addr[1])
 
     # 클라이언트가 접속을 끊을 때 까지 반복합니다.
@@ -38,35 +39,65 @@ def threaded(client_socket, addr):
     client_socket.close()
 
 
-client_sockets = [] # 서버에 접속한 클라이언트 목록
+def checkParticipant(len):
+    if(len == 2):
+        print("참가자 수: ", 2)
+        return True
+    else:
+        return False
 
-# 서버 IP 및 열어줄 포트
-HOST = '127.0.0.1'
-PORT = 9999
-
-# 서버 소켓 생성
-print('>> Server Start')
-server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-server_socket.bind((HOST, PORT))
-server_socket.listen()
+def randomWords():
+    words = ['physical', 'datalink', 'network', 'transport', 'applicaion',
+             'bit', 'frame', 'datagram', 'segment', 'message',
+             'socket', 'thread', 'server', 'client', 'programming']
+    return random.randrange(0, 16)
 
 
-try:
-    while True:
-        print('>> Wait')
-        # ###여기에 로직 작성하기######
-        #
-        # client_socket, addr = server_socket.accept()
-        # client_sockets.append(client_socket)
-        # start_new_thread(threaded, (client_socket, addr))
-        # print("참가자 수 : ", len(client_sockets))
+if __name__ == '__main__':
+    client_sockets = [] # 서버에 접속한 클라이언트 목록
 
-except Exception as e:
-    print('에러는? : ', e)
 
-finally:
-    server_socket.close()
+    # 서버 IP 및 열어줄 포트
+    HOST = '127.0.0.1'
+    PORT = 9999
+
+    # 서버 소켓 생성
+    print('>> Server Start')
+    server_socket = socket(AF_INET, SOCK_STREAM)
+    server_socket.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
+    server_socket.bind((HOST, PORT))
+    server_socket.listen(1)
+
+    try:
+        while True:
+            print('>> Wait')
+
+            # connection 체크
+            client_socket, addr = server_socket.accept()
+            client_sockets.append(client_socket)
+
+            # 각 client의 thread 생성 # TODO 문구 확인하기
+            start_new_thread(threaded, (client_socket, addr))
+
+            #print("참가자 수 : ", len(client_sockets))
+
+            # 참가자 수 확인 2가 맞으면 게임 실행
+            if(checkParticipant(len(client_socket))):
+                word = randomWords();
+
+                ###
+                # 게임 실행되는 중!!!!#
+                ###
+
+
+            else:
+                raise Exception('2명만 참가해야 게임을 시작할 수 있습니다.')
+
+
+    except Exception as e:
+        print('에러는? : ', e)
+    finally:
+        server_socket.close()
 
 
 
