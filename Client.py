@@ -17,10 +17,9 @@ def recv_data(client_socket) :
         print("MENTION:" + repr(data.decode()))
         if(data=="GAME OVER"):  client_socket.close()
 
-
 if __name__ == '__main__':
 
-    start_new_thread(recv_data, (client_socket,))
+    start_new_thread(recv_data,(client_socket,))
     print('>> Connect Server')
 
     while True:
