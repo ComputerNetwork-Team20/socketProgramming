@@ -125,7 +125,9 @@ if __name__ == '__main__':
 
 
             if(len(client_sockets) == 2):
-                client_socket.send("\n게임 시작".encode("utf-8"))
+                print(">>> 게임 프로세스 시작하기")
+                client_sockets[0].send("\n게임 시작".encode("utf-8"))
+                client_sockets[1].send("\n게임 시작".encode("utf-8"))
 
 
 
