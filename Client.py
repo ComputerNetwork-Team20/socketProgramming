@@ -10,31 +10,34 @@ def recv_data(client_socket) :
     while True :
         try:
             data = client_socket.recv(1024)
-            print("MENTION:" + data.decode())
+            print("\nMENTION:" + data.decode())
             if(data=="GAME OVER"):
                 break
         except ConnectionResetError as e:
-            print('>> Disconnected by ' + addr[0], ':', addr[1])
+            # print('>> Disconnected by ' + addr[0], ':', addr[1])
+            print('에러는? : ', e)
             break
 
+##############################################################################################
+HOST = '127.0.0.1'
+PORT = 9999
+
+print('>>> 클라이언트 실행')
+print('>> Connect Server')
+client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # 소켓 생성
+client_socket.connect((HOST, PORT))  # 연결
 
 if __name__ == '__main__':
-    print('>>> 클라이언트 실행')
-
-    HOST = '127.0.0.1'
-    PORT = 9999
-
 
     try:
         while True:
-            client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # 소켓 생성
-            client_socket.connect((HOST, PORT))  # 연결
-            print('>> Connect Server')
-
-
-            message = input('>>> 알파벳 혹은 단어를 입력하세요')
+            data = client_socket.recv(1024)
             start_new_thread(recv_data, (client_socket,))
-            client_socket.send(message.encode())
+
+
+            if(data == "\n게임 시작"):
+                message = input('>>> 알파벳 혹은 단어를 입력하세요')
+                client_socket.send(message.encode())
 
 
     except Exception as e:
