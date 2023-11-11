@@ -164,12 +164,12 @@ if __name__ == '__main__':
             # else:
             #     raise Exception('2명만 참가해야 게임을 시작할 수 있습니다.')
 
-        ### 여기서부터 게임 로직
+    ### 여기서부터 게임 로직
         randomString = randomWords()
         life = len(randomString) -1
         blankWord = "_"*len(randomString)
-        client_sockets[0].send("랜덤 단어를 생성하였습니다. 차례에 맞추어 문자 or 단어를 입력해주세요".encode())
-        client_sockets[1].send("랜덤 단어를 생성하였습니다. 차례에 맞추어 문자 or 단어를 입력해 주세요".encode())
+        client_sockets[0].send("랜덤 단어를 생성하였습니다. 차례에 맞추어 문자 or 단어를 입력해주세요".encode("utf-8"))
+        client_sockets[1].send("랜덤 단어를 생성하였습니다. 차례에 맞추어 문자 or 단어를 입력해 주세요".encode("utf-8"))
 
         while (len(client_sockets)==2):
             a=1
