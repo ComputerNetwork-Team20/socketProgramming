@@ -72,13 +72,14 @@ def threaded(client_socket, addr):
             # answer와 유저가 입력한 데이터 비교 TODO 함수명, 변수명 수정하기
             print('>>> 유저가 입력한 문자(열): [ ' + addr[0], ':', addr[1], data.decode(),"]")  # client로 부터 받은 데이터 보여주기
             result = ""
+            data = data.decode()
             if (len(data) == 1):  # 문자를 입력한 경우
                 result = checkChar(randomString,data)
             else:
                 result = checkWord(randomString,data)
 
             if result == "correct":
-                blankWord = showBlank(answer, blankWord, data)
+                blankWord = showBlank(randomString, blankWord, data)
                 sendMessageForAll(blankWord)
                 if(checkBlankNum(blankWord)):
                     sendMessageForAll("Win")
@@ -163,17 +164,17 @@ if __name__ == '__main__':
             # else:
             #     raise Exception('2명만 참가해야 게임을 시작할 수 있습니다.')
 
-        ### 여기서부터 게임 로직
-        while(True):
-            if(checkParticipant(len(client_sockets))!=2): break;
+    ### 여기서부터 게임 로직
+        randomString = randomWords()
+        life = len(randomString) -1
+        blankWord = "_"*len(randomString)
+        client_sockets[0].send("랜덤 단어를 생성하였습니다. 차례에 맞추어 문자 or 단어를 입력해주세요".encode("utf-8"))
+        client_sockets[1].send("랜덤 단어를 생성하였습니다. 차례에 맞추어 문자 or 단어를 입력해 주세요".encode("utf-8"))
 
-            randomString = randomWords()
-            life = len(randomString) -1
-            if (len(client_sockets) != 2):
-                exit()
-            for i in range(0, len(data)): blankWord*len(random)
-            client_sockets[0].send("랜덤 단어를 생성하였습니다. 차례에 맞추어 문자 or 단어를 입력해주세요")
-            client_sockets[1].send("랜덤 단어를 생성하였습니다. 차례에 맞추어 문자 or 단어를 입력해 주세요")
+        while (len(client_sockets)==2):
+            a=1
+
+
 
     except Exception as e:
         print('에러는? : ', e)
