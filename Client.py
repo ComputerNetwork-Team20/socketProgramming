@@ -3,37 +3,39 @@ import socket
 from _thread import *
 
 
-
 # 서버로부터 메세지를 받는 메소드
 # 스레드로 구동 시켜, 메세지를 보내는 코드와 별개로 작동하도록 처리
 def recv_data(client_socket) :
     while True :
         try:
-            data = client_socket.recv(1024)
-            print("MENTION:" + data.decode())
+            data = client_socket.recv(1024) #블로킹 함수
+            print("\nfrom server:" + data.decode())
+
             if(data=="GAME OVER"):
-                break
+                exit()
         except ConnectionResetError as e:
-            print('>> Disconnected by ' + addr[0], ':', addr[1])
+            # print('>> Disconnected by ' + addr[0], ':', addr[1])
+            print('에러는? : ', e)
+            client_socket.close()
             break
 
+##############################################################################################
+HOST = '127.0.0.1'
+PORT = 9999
+
+client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # 소켓 생성
+client_socket.connect((HOST, PORT))  # 연결
+print('>> Connect Server')
 
 if __name__ == '__main__':
     print('>>> 클라이언트 실행')
 
-    HOST = '127.0.0.1'
-    PORT = 9999
-
-
     try:
-        while True:
-            client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # 소켓 생성
-            client_socket.connect((HOST, PORT))  # 연결
-            print('>> Connect Server')
+        start_new_thread(recv_data, (client_socket,))
 
-
-            message = input('>>> 알파벳 혹은 단어를 입력하세요')
-            start_new_thread(recv_data, (client_socket,))
+        # 입력 받는 루프
+        while (True) :
+            message = input('>>> 알파벳 혹은 단어를 입력하세요')  # 블락 함수라서 여기서 client
             client_socket.send(message.encode())
 
 
@@ -41,6 +43,7 @@ if __name__ == '__main__':
         print('에러는? : ', e)
     finally:
         client_socket.close()
+
 
 
 

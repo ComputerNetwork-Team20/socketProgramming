@@ -4,7 +4,6 @@ import random
 
 def checkParticipant(len):
     if(len == 2):
-        print("참가자 수: ", 2)
         return True
     else:
         return False
@@ -37,14 +36,14 @@ def showBlank(answer, blankWord, data):
 
     for i in range(0, length):
         if answerList[i] == data:
-            blankList[i] = data
+            blankList[i] = data;
 
     blankWord = ''.join(blankList)
 
     return blankWord
 
 # 접속한 클라이언트마다 새로운 스레드가 생성되어 통신
-def threaded(client_socket, addr, answer, life):
+def threaded(client_socket, addr):
     # addr = host + port
     print('>>> 연결된 호스트: [', addr[0], ':', addr[1], "]")
 
@@ -60,29 +59,6 @@ def threaded(client_socket, addr, answer, life):
             # answer와 유저가 입력한 데이터 비교 TODO 함수명, 변수명 수정하기
             print('>>> 유저가 입력한 문자(열): [ ' + addr[0], ':', addr[1], data.decode(), "]")  # client로 부터 받은 데이터 보여주기
 
-            # blankWord= "_" * len(answer)
-            #
-            # result = ""
-            #
-            # #사용자가 입력한게 문자냐 단어냐 구분
-            # if len(data) == 1:
-            #     result = checkChar(answer, data)
-            # else:
-            #     result = checkWord()
-            #
-            #
-            # if result == "correct":
-            #     print("문자 하나 맞춤 빈칸공개한다")
-            #     showBlank = showBlank(answer, blankWord, data)
-            #     print("근데 단어 다맞췄으면 유저 승리")
-            # elif result == "wrong":
-            #     print("목숨감소해야함")
-            #     print("목숨 다떨어지면 유저 패배")
-            # elif result == "userwin":
-            #     print("단어맞춤 유저승리")
-            # else:
-            #     print("단어틀림 유저패배")
-            #
 
 
             # 결과 보내기
@@ -108,10 +84,11 @@ def threaded(client_socket, addr, answer, life):
 
 
 
+client_sockets = [] # 서버에 접속한 클라이언트 목록
 
 
 if __name__ == '__main__':
-    client_sockets = [] # 서버에 접속한 클라이언트 목록
+
 
 
     # 서버 IP 및 열어줄 포트
@@ -123,11 +100,11 @@ if __name__ == '__main__':
     server_socket = socket(AF_INET, SOCK_STREAM)
     server_socket.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
     server_socket.bind((HOST, PORT))
-    server_socket.listen()
+    server_socket.listen(1)
+    print('>>> 서버 대기 상태')
 
     try:
         while True:
-            print('>>> 서버 대기 상태')
 
             # clinent connection 체크 & 몇번 유저인지 반환
             client_socket, addr = server_socket.accept()
@@ -135,30 +112,38 @@ if __name__ == '__main__':
 
             # 각 client의 thread 생성
             start_new_thread(threaded, (client_socket, addr))
+            print(">>> 참가자 수 : ", len(client_sockets))
 
-            userTurnData = '>>> 순서 안내' + "\n" + \
-                       "user" + str(client_sockets.index(client_socket)+1) + "입니다."
-            server_socket.send(userTurnData.encode("utf-8"))
 
-            # 참가자 수 확인 2가 맞으면 게임 실행
-            if(checkParticipant(len(client_sockets))):
-                server_socket.send("참여자가 2명이 되었으니 게임을 시작하도록 하겠습니다.".encode("utf-8"))
-                #게임 메뉴 -> 예진
 
-                #단어, 목숨 설정 및 안내하기
-                answer = randomWords();
-                life = len(answer) - 1;
-                gameSettingData = ">>> 맞출 단어의 길이는 " + len(answer) + "이며, 목숨은 " + life + "개입니다.";
-                server_socket.send(gameSettingData.encode("utf-8"))
-            else:
-                raise Exception('2명만 참가해야 게임을 시작할 수 있습니다.')
+            userTurnData = '\n>>> 순서 안내: ' + \
+                       "user" + str(client_sockets.index(client_socket)+1) + "입니다"
+            client_socket.send(userTurnData.encode("utf-8"))
+
+            if (len(client_sockets) == 1):
+                client_socket.send("\n참여자가 1명이니 잠시 기다려주세요".encode("utf-8"))
+
+
+            if(len(client_sockets) == 2):
+                print(">>> 게임 프로세스 시작하기")
+                client_sockets[0].send("\n게임 시작".encode("utf-8"))
+                client_sockets[1].send("\n게임 시작".encode("utf-8"))
+                break
+
+            #
+            # else:
+            #     raise Exception('2명만 참가해야 게임을 시작할 수 있습니다.')
+
 
     except Exception as e:
         print('에러는? : ', e)
     finally:
         server_socket.close()
 
-
+### 여기서부터 게임 로직
+while (True):
+    if (len(client_sockets) != 2) :
+        exit()
 
 
 
