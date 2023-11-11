@@ -74,8 +74,6 @@ def threaded(client_socket, addr, answer, life):
             else:
                 print("단어틀림 유저패배")
 
-
-
             # 결과 보내기
             # 메세지를 보낸 본인을 제외한 서버에 접속한 클라이언트에게 메세지 보내기
             # TODO 본인을 포함한 모든 클라이언트에 중간 결과 공유
@@ -97,18 +95,6 @@ def threaded(client_socket, addr, answer, life):
     client_socket.close()
 
 
-def checkParticipant(len):
-    if(len == 2):
-        print("참가자 수: ", 2)
-        return True
-    else:
-        return False
-
-def randomWords():
-    words = ['physical', 'datalink', 'network', 'transport', 'applicaion',
-             'bit', 'frame', 'datagram', 'segment', 'message',
-             'socket', 'thread', 'server', 'client', 'programming']
-    return words[random.randrange(0, 16)]
 
 
 
@@ -128,23 +114,24 @@ if __name__ == '__main__':
     server_socket.bind((HOST, PORT))
     server_socket.listen(1)
 
+
     try:
         while True:
             print('>>> 서버 대기 상태')
-
             # clinent connection 체크 & 몇번 유저인지 반환
             client_socket, addr = server_socket.accept()
             client_sockets.append(client_socket)
 
             userTurnData = '>>> 순서 안내' + "\n" + \
-                       "user" + (client_sockets.index(client_socket)+1) + "입니다."
+                       "user" + str(client_sockets.index(client_socket)+1) + "입니다."
             server_socket.send(userTurnData.encode("utf-8"))
 
 
             # 참가자 수 확인 2가 맞으면 게임 실행
             if(checkParticipant(len(client_socket))):
                 #게임 메뉴 -> 예진
-
+                String = "#########################<—행멘 게임 메뉴얼—>#######################\n" + "\t1. 2인 1팀으로 진행합니다.\n " + "\t2. 2명이 접속하면 게임을 시작합니다.\n" + "\t3. 영어 단어는 랜덤으로 선정되며, 목숨은 단어 길이-1 입니다.\n" + "\t4. USER 1,2가 번갈아 가며 게임을 진행하게 됩니다.\n" + "\t5. 자신의 차례에 알파벳 하나를 입력해 게임을 계속 진행하거나,\n\t단어 전체를 입력해 정답을 맞추어 주세요.\n" + "\t6. 입력한 단어가 정답이면 SUCCESS, 틀리면 FAIL로 게임이 중단됩니다.\n" + "#########################<— THE END->#######################\n"
+                print(String)
                 #단어, 목숨 설정 및 안내하기
                 answer = randomWords();
                 life = len(answer) - 1;
