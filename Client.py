@@ -35,7 +35,7 @@ if __name__ == '__main__':
 
         # 입력 받는 루프
         while (True) :
-            message = input('>>> 알파벳 혹은 단어를 입력하세요')  # 블락 함수라서 여기서 client
+            message = input('>>> 알파벳 혹은 단어를 입력하세요')  #블락 함수라서 여기서 client
             client_socket.send(message.encode())
 
 
@@ -65,15 +65,6 @@ if __name__ == '__main__':
 #
 # data = s.recv(1024)
 # print("6. Response: {}".format(data.decode("utf-8")))
-
-
-
-
-
-
-
-
-
 
 # # tcpclient.py
 # from socket import *

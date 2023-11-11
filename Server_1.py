@@ -28,7 +28,7 @@ def checkWord(answer, data):
         return "userlose"
 
 
-def showBlank(answer, blankWord, data):
+def showBlank(answer,blankWord,data):
     answerList = list(answer)
     blankList = list(blankWord)
 
@@ -36,11 +36,22 @@ def showBlank(answer, blankWord, data):
 
     for i in range(0, length):
         if answerList[i] == data:
-            blankList[i] = data;
+            blankList[i] = data
 
     blankWord = ''.join(blankList)
 
     return blankWord
+
+def sendMessageForAll(data):
+    # 결과 보내기
+    for client in client_sockets:
+        client.send(data.encode())
+
+def checkBlankNum(blankWord):
+    if "_" in blankWord:
+        return False
+    else:
+        return True
 
 # 접속한 클라이언트마다 새로운 스레드가 생성되어 통신
 def threaded(client_socket, addr):
@@ -51,22 +62,39 @@ def threaded(client_socket, addr):
         try:
             # 유저가 입력한 문자 or 문자열
             data = client_socket.recv(1024)
-
+            global blankWord
+            global randomString
+            global life
             # if not data: #데이터가 없으면 disconnection -> 데이터가 없을 일은 없을 것 같아서?
             #     print('>>> 연결이 끊긴 호스트: [' + addr[0], ':', addr[1], "]")
             #     break
 
             # answer와 유저가 입력한 데이터 비교 TODO 함수명, 변수명 수정하기
-            print('>>> 유저가 입력한 문자(열): [ ' + addr[0], ':', addr[1], data.decode(), "]")  # client로 부터 받은 데이터 보여주기
+            print('>>> 유저가 입력한 문자(열): [ ' + addr[0], ':', addr[1], data.decode(),"]")  # client로 부터 받은 데이터 보여주기
+            result = ""
+            if (len(data) == 1):  # 문자를 입력한 경우
+                result = checkChar(randomString,data)
+            else:
+                result = checkWord(randomString,data)
 
-
-
-            # 결과 보내기
-            # 메세지를 보낸 본인을 제외한 서버에 접속한 클라이언트에게 메세지 보내기
-            # TODO 본인을 포함한 모든 클라이언트에 중간 결과 공유
-            for client in client_sockets :
-                if client != client_socket :
-                    client.send(data)
+            if result == "correct":
+                blankWord = showBlank(answer, blankWord, data)
+                sendMessageForAll(blankWord)
+                if(checkBlankNum(blankWord)):
+                    sendMessageForAll("Win")
+                    break
+            elif result == "wrong":
+                life-=1
+                if(life <=0):
+                    sendMessageForAll("너네 짐")
+                    break
+                sendMessageForAll("남은 목숨 : {}".format(life))
+            elif result == "userwin":
+                sendMessageForAll("너네 이김 잘했다.")
+                break
+            else:
+                sendMessageForAll("너네 패배함 수고")
+                break
 
 
         except ConnectionResetError as e:
@@ -78,14 +106,15 @@ def threaded(client_socket, addr):
         print('remove client list : ',len(client_sockets))
 
 
-
     client_socket.close()
 
 
 
 
 client_sockets = [] # 서버에 접속한 클라이언트 목록
-
+randomString = ""
+blankWord =""
+life = 0
 
 if __name__ == '__main__':
 
@@ -126,24 +155,48 @@ if __name__ == '__main__':
 
             if(len(client_sockets) == 2):
                 print(">>> 게임 프로세스 시작하기")
-                client_sockets[0].send("\n게임 시작".encode("utf-8"))
-                client_sockets[1].send("\n게임 시작".encode("utf-8"))
+                client_sockets[0].send("\n게임 시작\n".encode("utf-8"))
+                client_sockets[1].send("\n게임 시작\n".encode("utf-8"))
                 break
 
             #
             # else:
             #     raise Exception('2명만 참가해야 게임을 시작할 수 있습니다.')
 
+        ### 여기서부터 게임 로직
+        while(True):
+            if(checkParticipant(len(client_sockets))!=2): break;
+
+            randomString = randomWords()
+            life = len(randomString) -1
+            if (len(client_sockets) != 2):
+                exit()
+            for i in range(0, len(data)): blankWord*len(random)
+            client_sockets[0].send("랜덤 단어를 생성하였습니다. 차례에 맞추어 문자 or 단어를 입력해주세요")
+            client_sockets[1].send("랜덤 단어를 생성하였습니다. 차례에 맞추어 문자 or 단어를 입력해 주세요")
 
     except Exception as e:
         print('에러는? : ', e)
     finally:
         server_socket.close()
 
-### 여기서부터 게임 로직
-while (True):
-    if (len(client_sockets) != 2) :
-        exit()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
