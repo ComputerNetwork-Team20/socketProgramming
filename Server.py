@@ -37,7 +37,7 @@ def showBlank(answer, blankWord, data):
 
     for i in range(0, length):
         if answerList[i] == data:
-            blankList[i] = data;
+            blankList[i] = data
 
     blankWord = ''.join(blankList)
 
@@ -123,7 +123,7 @@ if __name__ == '__main__':
     server_socket = socket(AF_INET, SOCK_STREAM)
     server_socket.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
     server_socket.bind((HOST, PORT))
-    server_socket.listen(1)
+    server_socket.listen()
 
     try:
         while True:
@@ -140,9 +140,6 @@ if __name__ == '__main__':
                        "user" + str(client_sockets.index(client_socket)+1) + "입니다."
             server_socket.send(userTurnData.encode("utf-8"))
 
-
-
-
             # 참가자 수 확인 2가 맞으면 게임 실행
             if(checkParticipant(len(client_sockets))):
                 server_socket.send("참여자가 2명이 되었으니 게임을 시작하도록 하겠습니다.".encode("utf-8"))
@@ -153,12 +150,8 @@ if __name__ == '__main__':
                 life = len(answer) - 1;
                 gameSettingData = ">>> 맞출 단어의 길이는 " + len(answer) + "이며, 목숨은 " + life + "개입니다.";
                 server_socket.send(gameSettingData.encode("utf-8"))
-
-
-
             else:
                 raise Exception('2명만 참가해야 게임을 시작할 수 있습니다.')
-
 
     except Exception as e:
         print('에러는? : ', e)
@@ -217,4 +210,3 @@ if __name__ == '__main__':
 # print("메시지를 보냈습니다.")
 #
 # serverSocket.close()
-
