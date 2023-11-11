@@ -128,9 +128,7 @@ if __name__ == '__main__':
                 print(">>> 게임 프로세스 시작하기")
                 client_sockets[0].send("\n게임 시작".encode("utf-8"))
                 client_sockets[1].send("\n게임 시작".encode("utf-8"))
-
-
-
+                break
 
             #
             # else:
@@ -142,7 +140,10 @@ if __name__ == '__main__':
     finally:
         server_socket.close()
 
-
+### 여기서부터 게임 로직
+while (True):
+    if (len(client_sockets) != 2) :
+        exit()
 
 
 

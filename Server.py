@@ -37,7 +37,7 @@ def showBlank(answer, blankWord, data):
 
     for i in range(0, length):
         if answerList[i] == data:
-            blankList[i] = data;
+            blankList[i] = data
 
     blankWord = ''.join(blankList)
 
@@ -123,7 +123,7 @@ if __name__ == '__main__':
     server_socket = socket(AF_INET, SOCK_STREAM)
     server_socket.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
     server_socket.bind((HOST, PORT))
-    server_socket.listen(1)
+    server_socket.listen()
 
     try:
         while True:
