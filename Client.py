@@ -8,7 +8,7 @@ from _thread import *
 def recv_data(client_socket) :
     while True :
         try:
-            data = client_socket.recv(1024) #블로킹
+            data = client_socket.recv(1024) #블로킹 함수
             print("\nfrom server:" + data.decode())
 
             if(data=="GAME OVER"):
