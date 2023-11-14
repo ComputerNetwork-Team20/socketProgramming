@@ -8,16 +8,20 @@ def recv_data(client_socket):
     while True:
         try:
             data = client_socket.recv(1024)  # 블로킹 함수
-            print("\n" + data.decode())
+            data = data.decode()
+            print("\n" + data)
+
+            global flag
 
             if data == "GAME OVER":
+                flag = False
                 print(">>> 잘못된 단어를 입력했습니다 GAME OVER")
                 exit()
             elif data == "WIN":
-                print(">>> 단어 맞추기에 성공했습니다")
+                flag = False
                 message = input('>>> 게임을 종료하려면 1을 입력해주세요: ')
                 if message == 1:
-                    exit();
+                    exit()
 
         except ConnectionResetError as e:
             # print('>> Disconnected by ' + addr[0], ':', addr[1])
@@ -27,6 +31,7 @@ def recv_data(client_socket):
 
 
 ##############################################################################################
+flag = True
 HOST = '127.0.0.1'
 PORT = 9999
 
@@ -41,9 +46,12 @@ if __name__ == '__main__':
         start_new_thread(recv_data, (client_socket,))
 
         # 입력 받는 루프
-        while True:
+        while flag:
             message = input('>>> 알파벳 혹은 단어를 입력하세요: ')  # 블락 함수라서 여기서 client
             client_socket.send(message.encode())
+
+        print("게임이 끝났습니다!!!!!!!!!!!!!!!!!!!!!")
+        exit()
 
 
     except Exception as e:
