@@ -4,7 +4,7 @@ import random
 
 
 def checkParticipant(len):
-    if (len == 2):
+    if len == 2:
         return True
     else:
         return False
@@ -64,17 +64,20 @@ def threaded(client_socket, addr):
     # addr = host + port
     print('>>> 연결된 호스트: [', addr[0], ':', addr[1], "]")
 
-    while True:  # 클라이언트가 접속을 끊을 때 까지 반복합니다.
+    while True:  # 클라이언트가 접속을 끊을 때까지 반복합니다.
         try:
             # 유저가 입력한 문자 or 문자열
             data = client_socket.recv(1024)
+
+            # 전역변수
             global blankWord
             global randomString
             global life
+            result = ""
 
             # answer와 유저가 입력한 데이터 비교
             print('>>> 유저가 입력한 문자(열): [ ' + addr[0], ':', addr[1], "]", data.decode())  # client로 부터 받은 데이터 보여주기
-            result = ""
+
             data = data.decode()
 
             # 문자 or 문자열 체크
@@ -83,23 +86,23 @@ def threaded(client_socket, addr):
             else:
                 result = checkWord(randomString, data)
 
-            if result == "correct":
+            if result == "correct": # 하나만 맞췄을 때
                 blankWord = showBlank(randomString, blankWord, data)
                 sendMessageForAll(blankWord)
                 if checkBlank(blankWord):
-                    sendMessageForAll("Win")
+                    sendMessageForAll("CORRECT")
                     break
-            elif result == "wrong":
+            elif result == "wrong": # 하나만 틀렸을 때
                 life -= 1
                 if life <= 0:
-                    sendMessageForAll("너네 짐")
+                    sendMessageForAll("NOT CORRECT")
                     break
                 sendMessageForAll("남은 목숨 : {}".format(life))
-            elif result == "userwin":
-                sendMessageForAll("너네 이김 잘했다.")
+            elif result == "userwin": # 전부 다 맞췄을 때
+                sendMessageForAll("WIN")
                 break
             else:
-                sendMessageForAll("너네 패배함 수고")
+                sendMessageForAll("GAME OVER")
                 break
 
 
@@ -165,11 +168,14 @@ if __name__ == '__main__':
         randomString = randomWords()
         life = len(randomString) - 1
         blankWord = "_" * len(randomString)
-        client_sockets[0].send("랜덤 단어를 생성하였습니다. 차례에 맞추어 문자 or 단어를 입력해주세요".encode("utf-8"))
-        client_sockets[1].send("랜덤 단어를 생성하였습니다. 차례에 맞추어 문자 or 단어를 입력해 주세요".encode("utf-8"))
+        sendMessageForAll("랜덤 단어를 생성하였습니다. 차례에 맞추어 문자 or 단어를 입력해주세요")
+        # client_sockets[0].send("랜덤 단어를 생성하였습니다. 차례에 맞추어 문자 or 단어를 입력해주세요".encode("utf-8"))
+        # client_sockets[1].send("랜덤 단어를 생성하였습니다. 차례에 맞추어 문자 or 단어를 입력해 주세요".encode("utf-8"))
 
-        while (len(client_sockets) == 2):
-            a = 1
+
+
+        while len(client_sockets)==2:
+            a=1
 
 
 
