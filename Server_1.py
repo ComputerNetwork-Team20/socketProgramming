@@ -97,7 +97,6 @@ def threaded(client_socket, addr):
                 sendMessageForAll("WIN")
                 sendMessageForAll("정답은 " + randomString + "입니다")
                 # sendMessageForAll(">>> 단어 맞추기에 성공했습니다")
-
                 break
             else:
                 sendMessageForAll("GAME OVER")

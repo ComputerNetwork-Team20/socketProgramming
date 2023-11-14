@@ -10,9 +10,7 @@ def recv_data(client_socket):
             data = client_socket.recv(1024)  # 블로킹 함수
             data = data.decode()
             print("\n" + data)
-
             global flag
-
             if data == "GAME OVER":
                 flag = False
                 print(">>> 잘못된 단어를 입력했습니다 GAME OVER")
@@ -21,6 +19,8 @@ def recv_data(client_socket):
                 flag = False
                 print(">>승리하셨습니다.")
                 exit()
+
+
 
         except ConnectionResetError as e:
             # print('>> Disconnected by ' + addr[0], ':', addr[1])
@@ -51,14 +51,10 @@ if __name__ == '__main__':
         print("게임이 끝났습니다!!!!!!!!!!!!!!!!!!!!!")
         exit()
 
-
     except Exception as e:
         print('에러는? : ', e)
     finally:
         client_socket.close()
-
-
-
 
 # from socket import *
 #
