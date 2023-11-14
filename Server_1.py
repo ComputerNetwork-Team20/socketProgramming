@@ -31,7 +31,6 @@ def checkWord(answer, data):
 def showBlank(answer,blankWord,data):
     answerList = list(answer)
     blankList = list(blankWord)
-
     length = len(answer)
 
     for i in range(0, length):
@@ -88,7 +87,6 @@ def threaded(client_socket, addr):
                 life-=1
                 if(life <=0):
                     sendMessageForAll("너네 짐")
-                    break
                 sendMessageForAll("남은 목숨 : {}".format(life))
             elif result == "userwin":
                 sendMessageForAll("너네 이김 잘했다.")
@@ -118,8 +116,6 @@ blankWord =""
 life = 0
 
 if __name__ == '__main__':
-
-
 
     # 서버 IP 및 열어줄 포트
     HOST = '127.0.0.1'
@@ -166,7 +162,7 @@ if __name__ == '__main__':
 
     ### 여기서부터 게임 로직
         randomString = randomWords()
-        life = len(randomString) -1
+        life = len(randomString)-1
         blankWord = "_"*len(randomString)
         client_sockets[0].send("랜덤 단어를 생성하였습니다. 차례에 맞추어 문자 or 단어를 입력해주세요".encode("utf-8"))
         client_sockets[1].send("랜덤 단어를 생성하였습니다. 차례에 맞추어 문자 or 단어를 입력해 주세요".encode("utf-8"))
@@ -180,26 +176,6 @@ if __name__ == '__main__':
         print('에러는? : ', e)
     finally:
         server_socket.close()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ###################################################################################################################333333
 

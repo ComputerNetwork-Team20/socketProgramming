@@ -13,6 +13,8 @@ def recv_data(client_socket) :
 
             if(data=="GAME OVER"):
                 exit()
+
+
         except ConnectionResetError as e:
             # print('>> Disconnected by ' + addr[0], ':', addr[1])
             print('에러는? : ', e)
@@ -37,7 +39,6 @@ if __name__ == '__main__':
         while (True) :
             message = input('>>> 알파벳 혹은 단어를 입력하세요')  #블락 함수라서 여기서 client
             client_socket.send(message.encode())
-
 
     except Exception as e:
         print('에러는? : ', e)
