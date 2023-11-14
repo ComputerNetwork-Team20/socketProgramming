@@ -91,19 +91,22 @@ def threaded(client_socket, addr):
                 sendMessageForAll(blankWord)
                 if checkBlank(blankWord):
                     sendMessageForAll("CORRECT")
-                    break
+                    #break
             elif result == "wrong": # 하나만 틀렸을 때
                 life -= 1
                 if life <= 0:
                     sendMessageForAll("NOT CORRECT")
-                    break
+                    #break
                 sendMessageForAll("남은 목숨 : {}".format(life))
             elif result == "userwin": # 전부 다 맞췄을 때
                 sendMessageForAll("WIN")
-                break
+                sendMessageForAll("정답은 ", randomString, "입니다")
+                # sendMessageForAll(">>> 단어 맞추기에 성공했습니다")
+
+                #break
             else:
                 sendMessageForAll("GAME OVER")
-                break
+               # break
 
 
         except ConnectionResetError as e:
