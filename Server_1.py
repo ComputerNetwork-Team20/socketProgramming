@@ -2,13 +2,11 @@ from socket import *
 from _thread import *
 import random
 
-
 def checkParticipant(len):
     if len == 2:
         return True
     else:
         return False
-
 
 def randomWords():
     words = ['physical', 'datalink', 'network', 'transport', 'applicaion',
@@ -16,8 +14,10 @@ def randomWords():
              'socket', 'thread', 'server', 'client', 'programming']
     return words[random.randrange(0, 16)]
 
+def checkChar(answer, data, doneChar):
+    if data in doneChar:
+        return "doneChar"
 
-def checkChar(answer, data):
     if data in answer:
         return "correct"
     else:
@@ -31,7 +31,7 @@ def checkWord(answer, data):
         return "userlose"
 
 
-def showBlank(answer, blankWord, data):
+def showBlank(answer,blankWord,data):
     answerList = list(answer)
     blankList = list(blankWord)
 
@@ -45,7 +45,6 @@ def showBlank(answer, blankWord, data):
 
     return blankWord
 
-
 def sendMessageForAll(data):
     # 결과 보내기
     for client in client_sockets:
@@ -57,7 +56,6 @@ def checkBlank(blankWord):
         return False
     else:
         return True
-
 
 # 접속한 클라이언트마다 새로운 스레드가 생성되어 통신
 def threaded(client_socket, addr):
@@ -73,41 +71,44 @@ def threaded(client_socket, addr):
             global blankWord
             global randomString
             global life
+            global doneChar
             result = ""
 
             # answer와 유저가 입력한 데이터 비교
-            print('>>> 유저가 입력한 문자(열): [ ' + addr[0], ':', addr[1], "]", data.decode())  # client로 부터 받은 데이터 보여주기
+            print('>>> 유저가 입력한 문자(열): [ ' + addr[0], ':', addr[1], "]", data.decode())  #client로 부터 받은 데이터 보여주기
 
             data = data.decode()
 
             # 문자 or 문자열 체크
             if len(data) == 1:
-                result = checkChar(randomString, data)
+                result = checkChar(randomString, data, doneChar)
             else:
                 result = checkWord(randomString, data)
+
+            doneChar = doneChar + data
 
             if result == "correct": # 하나만 맞췄을 때
                 blankWord = showBlank(randomString, blankWord, data)
                 sendMessageForAll(blankWord)
                 if checkBlank(blankWord):
-                    sendMessageForAll("CORRECT")
-                    #break
+                    sendMessageForAll("WIN")
+                    break
             elif result == "wrong": # 하나만 틀렸을 때
                 life -= 1
                 if life <= 0:
-                    sendMessageForAll("NOT CORRECT")
-                    #break
+                    sendMessageForAll("GAME OVER")
+                    break
                 sendMessageForAll("남은 목숨 : {}".format(life))
             elif result == "userwin": # 전부 다 맞췄을 때
                 sendMessageForAll("WIN")
-                sendMessageForAll("정답은 ", randomString, "입니다")
+                sendMessageForAll("정답은 " + randomString + "입니다")
                 # sendMessageForAll(">>> 단어 맞추기에 성공했습니다")
-
-                #break
+                break
+            elif result == "doneChar":
+                sendMessageForAll("이미 입력한 문자입니다")
             else:
                 sendMessageForAll("GAME OVER")
-               # break
-
+                break
 
         except ConnectionResetError as e:
             print('>> Disconnected by ' + addr[0], ':', addr[1])
@@ -117,6 +118,7 @@ def threaded(client_socket, addr):
         client_sockets.remove(client_socket)
         print('remove client list : ', len(client_sockets))
 
+
     client_socket.close()
 
 # 전역 변수
@@ -124,8 +126,11 @@ client_sockets = []
 randomString = ""
 blankWord = ""
 life = 0
+doneChar = ""
 
 if __name__ == '__main__':
+
+
 
     # 서버 IP 및 열어줄 포트
     HOST = '127.0.0.1'
@@ -142,7 +147,7 @@ if __name__ == '__main__':
     try:
         while True:
 
-            # clinent connection 체크 & 몇번 유저인지 반환
+            # client connection 체크 & 몇번 유저인지 반환
             client_socket, addr = server_socket.accept()
             client_sockets.append(client_socket)
 
@@ -171,13 +176,12 @@ if __name__ == '__main__':
         randomString = randomWords()
         life = len(randomString) - 1
         blankWord = "_" * len(randomString)
+        doneChar = ""
         sendMessageForAll("랜덤 단어를 생성하였습니다. 차례에 맞추어 문자 or 단어를 입력해주세요")
         # client_sockets[0].send("랜덤 단어를 생성하였습니다. 차례에 맞추어 문자 or 단어를 입력해주세요".encode("utf-8"))
         # client_sockets[1].send("랜덤 단어를 생성하였습니다. 차례에 맞추어 문자 or 단어를 입력해 주세요".encode("utf-8"))
 
-
-
-        while len(client_sockets)==2:
+        while len(client_sockets)!=0:
             a=1
 
 
@@ -186,6 +190,26 @@ if __name__ == '__main__':
         print('에러는? : ', e)
     finally:
         server_socket.close()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ###################################################################################################################333333
 
@@ -211,6 +235,7 @@ if __name__ == '__main__':
 #         s.send("I am a server".encode("utf-8"))
 #         break
 #     conn.sendall("클라이언트야, ".encode("utf-8")+data)
+
 
 
 # from socket import *
