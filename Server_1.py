@@ -171,7 +171,7 @@ if __name__ == '__main__':
         # client_sockets[0].send("랜덤 단어를 생성하였습니다. 차례에 맞추어 문자 or 단어를 입력해주세요".encode("utf-8"))
         # client_sockets[1].send("랜덤 단어를 생성하였습니다. 차례에 맞추어 문자 or 단어를 입력해 주세요".encode("utf-8"))
 
-        while len(client_sockets)==2:
+        while len(client_sockets)!=0:
             a=1
 
 
