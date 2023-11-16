@@ -14,7 +14,10 @@ def randomWords():
              'socket', 'thread', 'server', 'client', 'programming']
     return words[random.randrange(0, 16)]
 
-def checkChar(answer, data):
+def checkChar(answer, data, doneChar):
+    if data in doneChar:
+        return "doneChar"
+
     if data in answer:
         return "correct"
     else:
@@ -98,6 +101,8 @@ def threaded(client_socket, addr):
                 sendMessageForAll("정답은 " + randomString + "입니다")
                 # sendMessageForAll(">>> 단어 맞추기에 성공했습니다")
                 break
+            elif result == "doneChar":
+                sendMessageForAll("이미 입력한 문자입니다")
             else:
                 sendMessageForAll("GAME OVER")
                 break
@@ -118,6 +123,7 @@ client_sockets = []
 randomString = ""
 blankWord = ""
 life = 0
+doneChar = ""
 
 if __name__ == '__main__':
 
@@ -138,7 +144,7 @@ if __name__ == '__main__':
     try:
         while True:
 
-            # clinent connection 체크 & 몇번 유저인지 반환
+            # client connection 체크 & 몇번 유저인지 반환
             client_socket, addr = server_socket.accept()
             client_sockets.append(client_socket)
 
@@ -167,6 +173,7 @@ if __name__ == '__main__':
         randomString = randomWords()
         life = len(randomString) - 1
         blankWord = "_" * len(randomString)
+        doneChar = ""
         sendMessageForAll("랜덤 단어를 생성하였습니다. 차례에 맞추어 문자 or 단어를 입력해주세요")
         # client_sockets[0].send("랜덤 단어를 생성하였습니다. 차례에 맞추어 문자 or 단어를 입력해주세요".encode("utf-8"))
         # client_sockets[1].send("랜덤 단어를 생성하였습니다. 차례에 맞추어 문자 or 단어를 입력해 주세요".encode("utf-8"))
