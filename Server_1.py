@@ -71,6 +71,7 @@ def threaded(client_socket, addr):
             global blankWord
             global randomString
             global life
+            global doneChar
             result = ""
 
             # answer와 유저가 입력한 데이터 비교
@@ -80,9 +81,11 @@ def threaded(client_socket, addr):
 
             # 문자 or 문자열 체크
             if len(data) == 1:
-                result = checkChar(randomString, data)
+                result = checkChar(randomString, data, doneChar)
             else:
                 result = checkWord(randomString, data)
+
+            doneChar = doneChar + data
 
             if result == "correct": # 하나만 맞췄을 때
                 blankWord = showBlank(randomString, blankWord, data)
