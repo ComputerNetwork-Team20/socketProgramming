@@ -2,20 +2,17 @@ from socket import *
 from _thread import *
 import random
 
-
 def checkParticipant(len):
     if len == 2:
         return True
     else:
         return False
 
-
 def randomWords():
     words = ['physical', 'datalink', 'network', 'transport', 'applicaion',
              'bit', 'frame', 'datagram', 'segment', 'message',
              'socket', 'thread', 'server', 'client', 'programming']
     return words[random.randrange(0, 16)]
-
 
 def checkChar(answer, data, doneChar):
     if data in doneChar:
@@ -74,7 +71,6 @@ def threaded(client_socket, addr):
             global blankWord
             global randomString
             global life
-            global doneChar
             result = ""
 
             # answer와 유저가 입력한 데이터 비교
@@ -84,11 +80,9 @@ def threaded(client_socket, addr):
 
             # 문자 or 문자열 체크
             if len(data) == 1:
-                result = checkChar(randomString, data, doneChar)
+                result = checkChar(randomString, data)
             else:
                 result = checkWord(randomString, data)
-
-            doneChar = doneChar + data
 
             if result == "correct": # 하나만 맞췄을 때
                 blankWord = showBlank(randomString, blankWord, data)
@@ -184,7 +178,7 @@ if __name__ == '__main__':
         # client_sockets[0].send("랜덤 단어를 생성하였습니다. 차례에 맞추어 문자 or 단어를 입력해주세요".encode("utf-8"))
         # client_sockets[1].send("랜덤 단어를 생성하였습니다. 차례에 맞추어 문자 or 단어를 입력해 주세요".encode("utf-8"))
 
-        while len(client_sockets) != 0:
+        while len(client_sockets)!=0:
             a=1
 
 
@@ -238,6 +232,7 @@ if __name__ == '__main__':
 #         s.send("I am a server".encode("utf-8"))
 #         break
 #     conn.sendall("클라이언트야, ".encode("utf-8")+data)
+
 
 
 # from socket import *
