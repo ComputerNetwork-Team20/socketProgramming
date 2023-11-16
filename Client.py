@@ -14,6 +14,8 @@ def recv_data(client_socket):
             global flag
 
             if data == "GAME START\n":
+                menu = "##############################<—행멘 게임 메뉴얼—>#############################\n" + "\t1. 2인 1팀으로 진행합니다.\n " + "\t2. 2명이 접속하면 게임을 시작합니다.\n" + "\t3. 영어 단어는 랜덤으로 선정되며, 목숨은 단어 길이-1 입니다.\n" + "\t4. USER 1,2가 번갈아 가며 게임을 진행하게 됩니다.\n" + "\t5. 자신의 차례에 알파벳 하나를 입력해 게임을 계속 진행하거나,\n\t단어 전체를 입력해 정답을 맞추어 주세요.\n" + "\t6. 입력한 단어가 정답이면 SUCCESS, 틀리면 FAIL로 게임이 중단됩니다.\n" + "##################################<—THE END->###################################\n"
+                print(menu)
                 flag = True
             elif data == "GAME OVER\n":
                 flag = False
@@ -52,7 +54,7 @@ if __name__ == '__main__':
 
         # 입력 받는 루프
         while flag:
-            message = input('>>> 알파벳 혹은 단어를 입력하세요: ')  # 블락 함수라서 여기서 client
+            message = input('>>> 알파벳 혹은 단어를 입력하세요: \n')  # 블락 함수라서 여기서 client
             client_socket.send(message.encode())
 
         print("게임이 끝났습니다!!!!!!!!!!!!!!!!!!!!!")

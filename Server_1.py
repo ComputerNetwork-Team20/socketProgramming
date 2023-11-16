@@ -49,6 +49,7 @@ def showBlank(answer,blankWord,data):
     return blankWord
 
 def sendMessageForAll(data):
+    time.sleep(0.1)
     # 결과 보내기
     for client in client_sockets:
         client.sendall(data.encode())
@@ -183,6 +184,7 @@ if __name__ == '__main__':
         blankWord = "_" * len(randomString)
         doneChar = ""
         sendMessageForAll("랜덤 단어를 생성하였습니다. 차례에 맞추어 문자 or 단어를 입력해주세요")
+        sendMessageForAll("단어의 길이가 {} 이므로 목숨값은 {}입니다.".format(life + 1, life))
         # client_sockets[0].sendall("랜덤 단어를 생성하였습니다. 차례에 맞추어 문자 or 단어를 입력해주세요".encode("utf-8"))
         # client_sockets[1].sendall("랜덤 단어를 생성하였습니다. 차례에 맞추어 문자 or 단어를 입력해 주세요".encode("utf-8"))
 
