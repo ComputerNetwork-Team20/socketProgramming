@@ -9,11 +9,13 @@ def recv_data(client_socket):
         try:
             data = client_socket.recv(1024)  # 블로킹 함수
             data = data.decode()
-            print("\n" + data)
+            print(data)
 
             global flag
 
-            if data == "GAME OVER":
+            if data == "GAME START\n":
+                flag = True
+            elif data == "GAME OVER\n":
                 flag = False
                 print(">>> 잘못된 단어를 입력했습니다 GAME OVER")
                 exit()
@@ -31,7 +33,7 @@ def recv_data(client_socket):
             break
 
 ##############################################################################################
-flag = True
+flag = False
 HOST = '127.0.0.1'
 PORT = 9999
 
@@ -44,6 +46,9 @@ if __name__ == '__main__':
 
     try:
         start_new_thread(recv_data, (client_socket,))
+
+        while not flag: a=1
+
 
         # 입력 받는 루프
         while flag:
