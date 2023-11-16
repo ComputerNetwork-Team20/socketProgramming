@@ -92,24 +92,32 @@ def threaded(client_socket, addr):
 
             if result == "correct": # 하나만 맞췄을 때
                 blankWord = showBlank(randomString, blankWord, data)
-                sendMessageForAll(blankWord)
                 if checkBlank(blankWord):
+                    sendMessageForAll("정답: {}".format(blankWord))
                     sendMessageForAll("WIN")
                     break
+                sendMessageForAll("맞았습니다. 남은 목숨 : {}".format(life))
+                sendMessageForAll("정답: {}".format(blankWord))
             elif result == "wrong": # 하나만 틀렸을 때
                 life -= 1
+                sendMessageForAll("틀렸습니다. 남은 목숨 : {}".format(life))
                 if life <= 0:
+                    sendMessageForAll("정답: {}".format(randomString))
                     sendMessageForAll("GAME OVER")
                     break
-                sendMessageForAll("남은 목숨 : {}".format(life))
+                sendMessageForAll("정답: {}".format(blankWord))
             elif result == "userwin": # 전부 다 맞췄을 때
+                sendMessageForAll("정답: {}".format(randomString))
                 sendMessageForAll("WIN")
-                sendMessageForAll("정답은 " + randomString + "입니다")
                 # sendMessageForAll(">>> 단어 맞추기에 성공했습니다")
                 break
             elif result == "doneChar":
-                sendMessageForAll("이미 입력한 문자입니다")
-            else:
+                sendMessageForAll("이미 입력한 문자입니다. 남은 목숨 : {}".format(life))
+                sendMessageForAll("정답: {}".format(blankWord))
+            else: #단어를 틀렸을 때
+                life = 0
+                sendMessageForAll("틀렸습니다. 남은 목숨 : {}".format(life))
+                sendMessageForAll("정답: {}".format(randomString))
                 sendMessageForAll("GAME OVER")
                 break
 
@@ -180,7 +188,8 @@ if __name__ == '__main__':
         life = len(randomString) - 1
         blankWord = "_" * len(randomString)
         doneChar = ""
-        sendMessageForAll("랜덤 단어를 생성하였습니다. 차례에 맞추어 문자 or 단어를 입력해주세요")
+        sendMessageForAll("랜덤 단어를 생성하였습니다. 차례에 맞추어 문자 또는 단어를 입력해주세요")
+        sendMessageForAll("\n정답: {}".format(blankWord))
         # client_sockets[0].send("랜덤 단어를 생성하였습니다. 차례에 맞추어 문자 or 단어를 입력해주세요".encode("utf-8"))
         # client_sockets[1].send("랜덤 단어를 생성하였습니다. 차례에 맞추어 문자 or 단어를 입력해 주세요".encode("utf-8"))
 
