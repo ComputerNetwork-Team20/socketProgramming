@@ -17,13 +17,16 @@ def recv_data(client_socket):
                 flag = True
             elif data == "GAME OVER\n":
                 flag = False
-                print(">>> 잘못된 단어를 입력했습니다 GAME OVER")
+                print(">> 패배하셨습니다.")
                 exit()
             elif data == "WIN":
                 flag = False
                 print(">>승리하셨습니다.")
                 exit()
 
+            elif '_' in data:
+                print("======================================")
+                print(">>> 알파벳 혹은 단어를 입력하세요: ")
 
 
         except ConnectionResetError as e:
@@ -52,7 +55,7 @@ if __name__ == '__main__':
 
         # 입력 받는 루프
         while flag:
-            message = input('>>> 알파벳 혹은 단어를 입력하세요: ')  # 블락 함수라서 여기서 client
+            message = input()  # 블락 함수라서 여기서 client
             client_socket.send(message.encode())
 
         print("게임이 끝났습니다!!!!!!!!!!!!!!!!!!!!!")
