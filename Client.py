@@ -10,17 +10,17 @@ def recv_data(client_socket):
         try:
             data = client_socket.recv(1024)  # 블로킹 함수
             data = data.decode()
-            print("\n" + data)
+            print(data)
 
             global flag
 
             if data == "GAME OVER":
                 flag = False
-                print(">> 패배하셨습니다.")
+                print(">>> 패배하셨습니다.")
                 exit()
             elif data == "WIN":
                 flag = False
-                print(">>승리하셨습니다.")
+                print(">>> 승리하셨습니다.")
                 exit()
 
             elif '_' in data:
@@ -29,7 +29,6 @@ def recv_data(client_socket):
 
 
         except ConnectionResetError as e:
-            # print('>> Disconnected by ' + addr[0], ':', addr[1])
             print('에러는? : ', e)
             client_socket.close()
             break
@@ -49,9 +48,8 @@ if __name__ == '__main__':
     try:
         start_new_thread(recv_data, (client_socket,))
 
-        # 입력 받는 루프
         while flag:
-            message = input()  # 블락 함수라서 여기서 client
+            message = input()
             client_socket.send(message.encode())
 
         print("!!게임이 끝났습니다!!")

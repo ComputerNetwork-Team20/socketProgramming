@@ -179,7 +179,7 @@ if __name__ == '__main__':
         life = len(randomString) - 1
         blankWord = "_" * len(randomString)
         doneChar = ""
-        sendMessageForAll("!!게임 시작!!\n랜덤 단어를 생성하였습니다. 차례에 맞추어 문자 또는 단어를 입력해주세요")
+        sendMessageForAll("!!게임을 시작하겠습니다!!\n랜덤 단어를 생성하였습니다. 차례에 맞추어 문자 또는 단어를 입력해 주세요!")
         sendMessageForAll("정답: {}".format(blankWord))
 
         while len(client_sockets) == 2:
