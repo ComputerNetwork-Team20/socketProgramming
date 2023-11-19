@@ -40,7 +40,7 @@ PORT = 9999
 
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # 소켓 생성
 client_socket.connect((HOST, PORT))  # 연결
-print('>> Connect Server')
+print('>>> Connect Server')
 
 if __name__ == '__main__':
     print('>>> 클라이언트 실행')
