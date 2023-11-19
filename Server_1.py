@@ -52,6 +52,7 @@ def sendMessageForAll(data):
     # 결과 보내기
     for client in client_sockets:
         client.send(data.encode())
+    time.sleep(0.1)
 
 
 def checkBlank(blankWord):
@@ -141,8 +142,6 @@ doneChar = ""
 
 if __name__ == '__main__':
 
-
-
     # 서버 IP 및 열어줄 포트
     HOST = '127.0.0.1'
     PORT = 9999
@@ -166,19 +165,20 @@ if __name__ == '__main__':
             start_new_thread(threaded, (client_socket, addr))
             print(">>> 참가자 수 : ", len(client_sockets))
 
-            userTurnData = '\n>>> 순서 안내: ' + \
+            userTurnData = '>>> 순서 안내: ' + \
                            "user" + str(client_sockets.index(client_socket) + 1) + "입니다"
             client_socket.send(userTurnData.encode("utf-8"))
 
             if (len(client_sockets) == 1):
-                client_socket.send("\n참여자가 1명이니 잠시 기다려주세요".encode("utf-8"))
+                client_socket.send("참여자가 1명이니 잠시 기다려주세요".encode("utf-8"))
 
             if (len(client_sockets) == 2):
                 print(">>> 게임 프로세스 시작하기")
-                client_sockets[0].send("\n게임 시작\n".encode("utf-8"))
-                client_sockets[1].send("\n게임 시작\n".encode("utf-8"))
-                menu = "\n##############################<—행멘 게임 메뉴얼—>#############################\n" + "\t1. 2인 1팀으로 진행합니다.\n " + "\t2. 2명이 접속하면 게임을 시작합니다.\n" + "\t3. 영어 단어는 랜덤으로 선정되며, 목숨은 단어 길이-1 입니다.\n" + "\t4. USER 1,2가 번갈아 가며 게임을 진행하게 됩니다.\n" + "\t5. 자신의 차례에 알파벳 하나를 입력해 게임을 계속 진행하거나,\n\t단어 전체를 입력해 정답을 맞추어 주세요.\n" + "\t6. 입력한 단어가 정답이면 SUCCESS, 틀리면 FAIL로 게임이 중단됩니다.\n" + "##################################<—THE END->###################################\n"
+                client_sockets[0].send("게임 시작\n".encode("utf-8"))
+                client_sockets[1].send("게임 시작\n".encode("utf-8"))
+                menu = "##############################<—행멘 게임 메뉴얼—>#############################\n" + "\t1. 2인 1팀으로 진행합니다.\n " + "\t2. 2명이 접속하면 게임을 시작합니다.\n" + "\t3. 영어 단어는 랜덤으로 선정되며, 목숨은 단어 길이-1 입니다.\n" + "\t4. USER 1,2가 번갈아 가며 게임을 진행하게 됩니다.\n" + "\t5. 자신의 차례에 알파벳 하나를 입력해 게임을 계속 진행하거나,\n\t단어 전체를 입력해 정답을 맞추어 주세요.\n" + "\t6. 입력한 단어가 정답이면 SUCCESS, 틀리면 FAIL로 게임이 중단됩니다.\n" + "##################################<—THE END->###################################\n"
                 sendMessageForAll(menu)
+                break
 
 
 
@@ -192,7 +192,7 @@ if __name__ == '__main__':
         blankWord = "_" * len(randomString)
         doneChar = ""
         sendMessageForAll("랜덤 단어를 생성하였습니다. 차례에 맞추어 문자 또는 단어를 입력해주세요")
-        sendMessageForAll("\n정답: {}".format(blankWord))
+        sendMessageForAll("정답: {}".format(blankWord))
         # client_sockets[0].send("랜덤 단어를 생성하였습니다. 차례에 맞추어 문자 or 단어를 입력해주세요".encode("utf-8"))
         # client_sockets[1].send("랜덤 단어를 생성하였습니다. 차례에 맞추어 문자 or 단어를 입력해 주세요".encode("utf-8"))
 
