@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from socket import *
 from _thread import *
 import random
@@ -49,7 +51,6 @@ def showBlank(answer,blankWord,data):
     return blankWord
 
 def sendMessageForAll(data):
-    # 결과 보내기
     for client in client_sockets:
         client.send(data.encode())
     time.sleep(0.1)
@@ -63,10 +64,9 @@ def checkBlank(blankWord):
 
 # 접속한 클라이언트마다 새로운 스레드가 생성되어 통신
 def threaded(client_socket, addr):
-    # addr = host + port
     print('>>> 연결된 호스트: [', addr[0], ':', addr[1], "]")
 
-    while True:  # 클라이언트가 접속을 끊을 때까지 반복합니다.
+    while True:
         try:
             # 유저가 입력한 문자 or 문자열
             data = client_socket.recv(1024)
@@ -110,9 +110,8 @@ def threaded(client_socket, addr):
             elif result == "userwin": # 전부 다 맞췄을 때
                 sendMessageForAll("정답: {}".format(randomString))
                 sendMessageForAll("WIN")
-                # sendMessageForAll(">>> 단어 맞추기에 성공했습니다")
                 break
-            elif result == "doneChar":
+            elif result == "doneChar": # 이미 입력한 문자
                 sendMessageForAll("이미 입력한 문자입니다. 남은 목숨 : {}".format(life))
                 sendMessageForAll("정답: {}".format(blankWord))
             else: #단어를 틀렸을 때
@@ -133,7 +132,8 @@ def threaded(client_socket, addr):
 
     client_socket.close()
 
-# 전역 변수
+
+##############################################################################################
 client_sockets = []
 randomString = ""
 blankWord = ""
@@ -142,11 +142,9 @@ doneChar = ""
 
 if __name__ == '__main__':
 
-    # 서버 IP 및 열어줄 포트
     HOST = '127.0.0.1'
     PORT = 9999
 
-    # 서버 소켓 생성
     print('>>> 서버 실행')
     server_socket = socket(AF_INET, SOCK_STREAM)
     server_socket.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
@@ -157,11 +155,9 @@ if __name__ == '__main__':
     try:
         while True:
 
-            # client connection 체크 & 몇번 유저인지 반환
             client_socket, addr = server_socket.accept()
             client_sockets.append(client_socket)
 
-            # 각 client의 thread 생성
             start_new_thread(threaded, (client_socket, addr))
             print(">>> 참가자 수 : ", len(client_sockets))
 
@@ -169,36 +165,25 @@ if __name__ == '__main__':
                            "user" + str(client_sockets.index(client_socket) + 1) + "입니다"
             client_socket.send(userTurnData.encode("utf-8"))
 
-            if (len(client_sockets) == 1):
+            if len(client_sockets) == 1:
                 client_socket.send("참여자가 1명이니 잠시 기다려주세요".encode("utf-8"))
 
-            if (len(client_sockets) == 2):
+            if len(client_sockets) == 2:
                 print(">>> 게임 프로세스 시작하기")
-                client_sockets[0].send("게임 시작\n".encode("utf-8"))
-                client_sockets[1].send("게임 시작\n".encode("utf-8"))
                 menu = "##############################<—행멘 게임 메뉴얼—>#############################\n" + "\t1. 2인 1팀으로 진행합니다.\n " + "\t2. 2명이 접속하면 게임을 시작합니다.\n" + "\t3. 영어 단어는 랜덤으로 선정되며, 목숨은 단어 길이-1 입니다.\n" + "\t4. USER 1,2가 번갈아 가며 게임을 진행하게 됩니다.\n" + "\t5. 자신의 차례에 알파벳 하나를 입력해 게임을 계속 진행하거나,\n\t단어 전체를 입력해 정답을 맞추어 주세요.\n" + "\t6. 입력한 단어가 정답이면 SUCCESS, 틀리면 FAIL로 게임이 중단됩니다.\n" + "##################################<—THE END->###################################\n"
                 sendMessageForAll(menu)
                 break
 
-
-
-            #
-            # else:
-            #     raise Exception('2명만 참가해야 게임을 시작할 수 있습니다.')
-
-        ### 여기서부터 게임 로직
+        # 게임 로직
         randomString = randomWords()
         life = len(randomString) - 1
         blankWord = "_" * len(randomString)
         doneChar = ""
-        sendMessageForAll("랜덤 단어를 생성하였습니다. 차례에 맞추어 문자 또는 단어를 입력해주세요")
+        sendMessageForAll("!!게임 시작!!\n랜덤 단어를 생성하였습니다. 차례에 맞추어 문자 또는 단어를 입력해주세요")
         sendMessageForAll("정답: {}".format(blankWord))
-        # client_sockets[0].send("랜덤 단어를 생성하였습니다. 차례에 맞추어 문자 or 단어를 입력해주세요".encode("utf-8"))
-        # client_sockets[1].send("랜덤 단어를 생성하였습니다. 차례에 맞추어 문자 or 단어를 입력해 주세요".encode("utf-8"))
 
         while len(client_sockets) == 2:
             a=1
-
 
 
     except Exception as e:
@@ -206,70 +191,3 @@ if __name__ == '__main__':
     finally:
         server_socket.close()
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-###################################################################################################################333333
-
-# from socket import *
-#
-# HOST = "127.0.0.1"
-# PORT = 12346
-#
-# s = socket(AF_INET, SOCK_STREAM)
-# s.bind((HOST, PORT))
-# s.listen(1)
-# print("1. 서버가 대기중입니다")
-#
-# while(True):
-#     conn, addr = s.accept()
-#     print("3. {} has been connected".format(addr))
-#
-#
-#     data = conn.recv(1024)
-#     print("5. 받은 데이터 :", data.decode("utf-8"))
-#
-#     if not data:
-#         s.send("I am a server".encode("utf-8"))
-#         break
-#     conn.sendall("클라이언트야, ".encode("utf-8")+data)
-
-
-# from socket import *
-#
-# host = "127.0.0.1"
-# port = 12345
-#
-# serverSocket = socket(AF_INET, SOCK_STREAM)
-# serverSocket.bind((host,port))
-# serverSocket.listen(1)
-# print("대기중입니다")
-#
-# connectionSocket, addr = serverSocket.accept()
-# print(str(addr), "에서 접속되었습니다.")
-#
-# data = connectionSocket.recv(1024) #데이터 최대 수신 1024
-# print("받은 데이터 :", data.decode("utf-8"))
-#
-#
-# connectionSocket.send("I am a server".encode("utf-8"))
-# print("메시지를 보냈습니다.")
-#
-# serverSocket.close()
