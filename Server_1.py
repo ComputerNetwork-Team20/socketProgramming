@@ -11,7 +11,7 @@ def checkParticipant(len):
 
 
 def randomWords():
-    words = ['physical', 'datalink', 'network', 'transport', 'applicaion',
+    words = ['physical', 'datalink', 'network', 'transport', 'application',
              'bit', 'frame', 'datagram', 'segment', 'message',
              'socket', 'thread', 'server', 'client', 'programming']
     return words[random.randrange(0, 16)]
