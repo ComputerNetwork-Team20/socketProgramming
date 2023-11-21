@@ -78,6 +78,7 @@ def threaded(client_socket, addr):
         try:
             # 유저가 입력한 문자 or 문자열
             data = client_socket.recv(1024)
+            data = data.decode()
 
             # 전역변수
             global blankWord
@@ -87,9 +88,8 @@ def threaded(client_socket, addr):
             result = ""
 
             # answer와 유저가 입력한 데이터 비교
-            print('>>> 유저가 입력한 문자(열): [ ' + addr[0], ':', addr[1], "]", data.decode())  # client로 부터 받은 데이터 보여주기
+            print('>>> 유저가 입력한 문자(열): [ ' + addr[0], ':', addr[1], "]", data)  # client로 부터 받은 데이터 보여주기
 
-            data = data.decode()
 
             if len(data) == 0:
                 break
