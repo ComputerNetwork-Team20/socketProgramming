@@ -8,7 +8,7 @@ from _thread import *
 def recv_data(client_socket):
     while True:
         try:
-            data = client_socket.recv(1024)  # 블로킹 함수
+            data = client_socket.recv(1024)
             data = data.decode()
             print(data)
 
