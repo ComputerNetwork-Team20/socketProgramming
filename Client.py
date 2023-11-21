@@ -4,7 +4,6 @@ import socket
 from _thread import *
 
 
-# 서버로부터 메세지를 받는 메소드
 def recv_data(client_socket):
     while True:
         try:
@@ -35,11 +34,11 @@ def recv_data(client_socket):
 
 ##############################################################################################
 flag = True
-HOST = '127.0.0.1'
-PORT = 9999
+HOST = '127.0.0.1'  # 포트포워딩 후 서버를 실행시킬 컴퓨터의 IP주소로 변경 후 실행
+PORT = 9999  # 사용자 지정 내부 포트
 
-client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # 소켓 생성
-client_socket.connect((HOST, PORT))  # 연결
+client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+client_socket.connect((HOST, PORT))
 print('>>> Connect Server')
 
 if __name__ == '__main__':
@@ -47,11 +46,9 @@ if __name__ == '__main__':
 
     try:
         start_new_thread(recv_data, (client_socket,))
-
         while flag:
             message = input()
             client_socket.send(message.encode())
-
         print("!!게임이 끝났습니다!!")
         exit()
 

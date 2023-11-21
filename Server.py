@@ -37,9 +37,9 @@ def checkWord(answer, data):
         return "userlose"
 
 
-def showBlank(answer, blankWord, data):
+def showBlank(answer, blank_word, data):
     answerList = list(answer)
-    blankList = list(blankWord)
+    blankList = list(blank_word)
 
     length = len(answer)
 
@@ -47,9 +47,9 @@ def showBlank(answer, blankWord, data):
         if answerList[i] == data:
             blankList[i] = data
 
-    blankWord = ''.join(blankList)
+    blank_word = ''.join(blankList)
 
-    return blankWord
+    return blank_word
 
 
 def sendMessageForAll(data):
@@ -63,8 +63,8 @@ def sendMessage(data):
     time.sleep(0.1)
 
 
-def checkBlank(blankWord):
-    if "_" in blankWord:
+def checkBlank(blank_word):
+    if "_" in blank_word:
         return False
     else:
         return True
@@ -151,8 +151,8 @@ doneChar = ""
 
 if __name__ == '__main__':
 
-    HOST = '127.0.0.1'
-    PORT = 9999
+    HOST = '127.0.0.1' # 포트포워딩 후 서버를 실행시킬 컴퓨터의 IP주소로 변경 후 실행
+    PORT = 9999 # 사용자 지정 내부 포트
 
     print('>>> 서버 실행')
     server_socket = socket(AF_INET, SOCK_STREAM)
@@ -163,7 +163,6 @@ if __name__ == '__main__':
 
     try:
         while True:
-
             client_socket, addr = server_socket.accept()
             client_sockets.append(client_socket)
 
@@ -193,7 +192,6 @@ if __name__ == '__main__':
 
         while client_sockets:
             a = 1
-
 
     except Exception as e:
         print('에러는? : ', e)
